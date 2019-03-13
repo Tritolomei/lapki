@@ -26,3 +26,16 @@ function avarege(arr) {
     }
     return sum/qty;
 }
+
+
+min = students[students.length - 1][1];
+for (var i = 0; i < students.length; i++) {
+    res += students[i][0] + ',' + students[i][1].toFixed(3) + '\r\n';    
+}
+
+qtyS40 = Math.round(40 * students.length / 100);
+console.log('Первые 40% студентов рейтинга');
+console.log(students.slice(0,qtyS40));
+console.log('Минимальный балл для получения стипендии', min);
+
+fs.writeFileSync('rating.csv', res);
