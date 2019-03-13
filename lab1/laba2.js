@@ -28,3 +28,18 @@ function onlyBudget(arr) {
     return res;
 }
 
+students = fs.readFileSync('students.csv', 'utf-8');
+students = onlyBudget(convertData(students.toString()));
+
+
+for (var i = 0; i < students.length; i++) {
+    students[i] = [
+        students[i][0],
+        avarege(students[i].slice(1))
+    ];
+}
+
+students.sort(function (a,b) {
+    return b[1] - a[1];    
+});
+
