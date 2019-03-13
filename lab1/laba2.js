@@ -17,3 +17,12 @@ function convertData(str) {
     }
     return arr;    
 }
+
+function avarege(arr) {
+    var sum = 0,
+        qty = arr.length;
+    for (var i = 0; i < qty; i++) {
+        sum += arr[i];        
+    }
+    return sum/qty;
+}
