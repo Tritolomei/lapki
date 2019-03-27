@@ -36,3 +36,91 @@ const operatorsData = {
 		associativity: '>'
 	}
 }
+
+// Todo this is total garbage, mb you should rewrite this later. mb.
+function negativeCheck(string, index) {
+	let current = index - 1;
+	while (current > 0 && !operatorsData[string[current]] && (isNaN(+(string[current])) || string[current] === ' ') && string[current] !== '(' && string[current] !== ')') {
+		current--;
+	}
+	// console.log(string[current]);
+	if (operatorsData[string[current]] || string[current] === '(' || current < 0) {
+		return true
+		// Todo do you even need this second check?
+		// current = index + 1;
+		// while (index < string.length && !operatorsData[string[current]] && (isNaN(+(string[current])) || string[current] === ' ') && string[current] !== '(' && string[current] !== ')') {
+		// 	current++;
+		// }
+		// if (!isNaN(+(string[current])) || string[current] === ')' || string[current] === '(') {
+		// 	return true
+		// }
+	}
+	return false
+}
+
+
+function stringToRPN(input) {
+	// input = input.replace( /\s/g, '');
+	// console.log(input);
+	const output = [], operators = [];
+	for(let i = 0; i < input.length; i++) {
+		if (!isNaN(+(input[i])) && input[i] !== ' ') {
+			let number = input[i];
+			while (!isNaN(+(input[i + 1])) && input[i + 1] !== ' ') {
+				i++;
+				number += input[i];
+			}
+			output.push(+number);
+			
+		} else if (operatorsData[input[i]]) {
+			let currentData = operatorsData[input[i]];
+			if (input[i] === '-' && negativeCheck(input, i)) {
+				currentData = operatorsData['-u']
+			}
+			while (
+				operators.length > 0 
+				&& (operators[operators.length - 1].precendence > currentData.precendence 
+					|| (operators[operators.length - 1].precendence === currentData.precendence 
+						&& operators[operators.length - 1].associativity === '<'
+					)
+				)
+			){
+				output.push(operators.pop());
+			}
+			operators.push(currentData);
+		} else if (input[i] === '(') {
+			operators.push(input[i]);
+
+		} else if (input[i] === ')') {
+			while(operators[operators.length - 1] !== '(' && operators.length > 0) {
+				output.push(operators.pop());
+			}
+			operators.pop();
+		}
+	}
+	while(operators.length > 0) {
+		output.push(operators.pop());
+	}
+	return output;
+}
+
+function RPNsolver(input) {
+	const output = [];
+	while(input.length > 0) {
+		// console.log(output);
+		let data = input.shift();
+		if (isNaN(data)) {
+			const operand = output.pop();
+			if(data.debug === '-u') {
+				output.push(data.method(operand));
+			} else {
+				output.push(data.method(output.pop(), operand));
+			}
+		} else {
+			output.push(data);
+		}
+	};
+	return output.pop();
+}
+// console.log(stringToRPN(process.argv[2]));
+console.log(RPNsolver(stringToRPN(process.argv[2])));
