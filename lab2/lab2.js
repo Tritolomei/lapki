@@ -104,22 +104,34 @@ function stringToRPN(input) {
 	return output;
 }
 
+
+// Input : reverse polish notation array with operators and numbers to calculate
 function RPNsolver(input) {
+	// Output: array for calculations
 	const output = [];
+	// Input loop
 	while(input.length > 0) {
 		// console.log(output);
+
+		// Shift the element from input array (shift = take the first element from array and delete it. Like pop but upside down)
 		let data = input.shift();
 		if (isNaN(data)) {
+			// If data that we shifted is an operator (isNan(data) = data is Not A Number? returns true or false)
 			const operand = output.pop();
+			// We pop data from the output stack. It won't be empty because operator cannot be first in RPN.
 			if(data.debug === '-u') {
+				// We check either the operator is unary or not. If unary we use current operator method(from operatorData) on data we just poped, then push in output
 				output.push(data.method(operand));
 			} else {
+				// If operator is binary we pop one more number from output data and use current operator method, then push in output
 				output.push(data.method(output.pop(), operand));
 			}
 		} else {
+			// If data is a number we push it in output
 			output.push(data);
 		}
 	};
+	// in the end we will always have one number in output stack, wich is out result.
 	return output.pop();
 }
 // console.log(stringToRPN(process.argv[2]));
